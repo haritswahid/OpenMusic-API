@@ -6,6 +6,8 @@ const {
   PostAuthenticationPayloadSchema,
   PutAuthenticationPayloadSchema,
   DeleteAuthenticationPayloadSchema,
+  PostPlaylistPayloadSchema,
+  PostSongPlaylistPayloadSchema,
 } = require('./schema');
 
 const OpenMusicValidator = {
@@ -47,6 +49,20 @@ const OpenMusicValidator = {
   },
   validateDeleteAuthenticationPayload: (payload) => {
     const validationResult = DeleteAuthenticationPayloadSchema.validate(payload);
+    if (validationResult.error) {
+      throw new InvariantError(validationResult.error.message);
+    }
+  },
+
+  // Playlist
+  validatePlaylistPayload: (payload) => {
+    const validationResult = PostPlaylistPayloadSchema.validate(payload);
+    if (validationResult.error) {
+      throw new InvariantError(validationResult.error.message);
+    }
+  },
+  validateSongPlaylistPayload: (payload) => {
+    const validationResult = PostSongPlaylistPayloadSchema.validate(payload);
     if (validationResult.error) {
       throw new InvariantError(validationResult.error.message);
     }

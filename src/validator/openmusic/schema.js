@@ -28,13 +28,19 @@ const PostAuthenticationPayloadSchema = Joi.object({
   username: Joi.string().required(),
   password: Joi.string().required(),
 });
-
 const PutAuthenticationPayloadSchema = Joi.object({
   refreshToken: Joi.string().required(),
 });
-
 const DeleteAuthenticationPayloadSchema = Joi.object({
   refreshToken: Joi.string().required(),
+});
+
+// Playlist
+const PostPlaylistPayloadSchema = Joi.object({
+  name: Joi.string().required(),
+});
+const PostSongPlaylistPayloadSchema = Joi.object({
+  songId: Joi.string().required(),
 });
 
 module.exports = {
@@ -44,4 +50,6 @@ module.exports = {
   PostAuthenticationPayloadSchema,
   PutAuthenticationPayloadSchema,
   DeleteAuthenticationPayloadSchema,
+  PostPlaylistPayloadSchema,
+  PostSongPlaylistPayloadSchema,
 };
