@@ -64,6 +64,52 @@ exports.up = (pgm) => {
   pgm.addConstraint('playlists', 'fk_playlists.owner.id', 'FOREIGN KEY(owner) REFERENCES users(id) ON DELETE CASCADE');
   pgm.addConstraint('playlist_song', 'fk_playlist_song.songs.id', 'FOREIGN KEY(song_id) REFERENCES songs(id) ON DELETE CASCADE');
   pgm.addConstraint('playlist_song', 'fk_playlist_song.playlists.id', 'FOREIGN KEY(playlist_id) REFERENCES playlists(id) ON DELETE CASCADE');
+
+  // Optional
+  pgm.createTable('collaborations', {
+    id: {
+      type: 'VARCHAR(50)',
+      primaryKey: true,
+    },
+    playlist_id: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
+    user_id: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
+  });
+  pgm.addConstraint('collaborations', 'unique_playlist_id_and_user_id', 'UNIQUE(playlist_id, user_id)');
+  pgm.addConstraint('collaborations', 'fk_collaborations.playlists.id', 'FOREIGN KEY(playlist_id) REFERENCES playlists(id) ON DELETE CASCADE');
+  pgm.addConstraint('collaborations', 'fk_collaborations.user.id', 'FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE');
+
+  pgm.createTable('activities', {
+    id: {
+      type: 'VARCHAR(50)',
+      primaryKey: true,
+    },
+    playlist_id: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
+    user_id: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
+    song_id: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
+    time: {
+      type: 'TEXT',
+      notNull: true,
+    },
+    action: {
+      type: 'TEXT',
+      notNull: true,
+    },
+  });
 };
 
 exports.down = (pgm) => {
@@ -76,4 +122,6 @@ exports.down = (pgm) => {
   pgm.dropTable('authentications');
   pgm.dropTable('playlists');
   pgm.dropTable('playlist_song');
+  pgm.dropTable('collaborations');
+  pgm.dropTable('activities');
 };
