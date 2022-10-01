@@ -1,5 +1,9 @@
 // Kriteria 1: Registrasi dan Autentikasi Pengguna
 // Kriteria 2: Pengelolaan Data Playlist
+// Kriteria 3: Menerapkan Foreign Key
+// Kriteria 4: Menerapkan Data Validation
+// Kriteria 5: Penanganan Eror (Error Handling)
+// Kriteria 6: Pertahankan Fitur OpenMusic API versi 1
 require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
