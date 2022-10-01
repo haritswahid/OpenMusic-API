@@ -58,9 +58,20 @@ exports.up = (pgm) => {
       notNull: true,
     },
   });
+
+  // Foreign Key
+  pgm.addConstraint('songs', 'fk_songs.albums.id', 'FOREIGN KEY(album_id) REFERENCES albums(id) ON DELETE CASCADE');
+  pgm.addConstraint('playlists', 'fk_playlists.owner.id', 'FOREIGN KEY(owner) REFERENCES users(id) ON DELETE CASCADE');
+  pgm.addConstraint('playlist_song', 'fk_playlist_song.songs.id', 'FOREIGN KEY(song_id) REFERENCES songs(id) ON DELETE CASCADE');
+  pgm.addConstraint('playlist_song', 'fk_playlist_song.playlists.id', 'FOREIGN KEY(playlist_id) REFERENCES playlists(id) ON DELETE CASCADE');
 };
 
 exports.down = (pgm) => {
+  pgm.dropConstraint('playlist_song', 'fk_playlist_song.playlists.id');
+  pgm.dropConstraint('playlist_song', 'fk_playlist_song.songs.id');
+  pgm.dropConstraint('playlists', 'fk_playlists.owner.id');
+  pgm.dropConstraint('songs', 'fk_songs.albums.id');
+
   pgm.dropTable('users');
   pgm.dropTable('authentications');
   pgm.dropTable('playlists');
