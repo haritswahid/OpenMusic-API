@@ -1,3 +1,4 @@
+// Kriteria 1: Registrasi dan Autentikasi Pengguna
 require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
