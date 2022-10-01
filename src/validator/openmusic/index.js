@@ -19,7 +19,7 @@ const OpenMusicValidator = {
     if (validationResult.error) {
       throw new InvariantError(validationResult.error.message);
     }
-  }
+  },
 };
 
 module.exports = OpenMusicValidator;
