@@ -6,8 +6,9 @@ const NotFoundError = require('../../exceptions/NotFoundError');
 const { mapDBToModelPlaylists } = require('../../utils');
 
 class PlaylistsService {
-  constructor() {
+  constructor(collaborationService) {
     this.pool = new Pool();
+    this.collaborationService = collaborationService;
   }
 
   async addPlaylist({
@@ -31,7 +32,12 @@ class PlaylistsService {
 
   async getPlaylists(owner) {
     const query = {
-      text: 'SELECT users.username,playlists.* FROM users JOIN playlists ON users.id = playlists.owner WHERE owner = $1',
+      text: `SELECT u.username,db.* FROM
+            (SELECT p.* FROM playlists p
+            LEFT JOIN collaborations c ON c.playlist_id = p.id
+            WHERE p.owner = $1 OR c.user_id = $1
+            GROUP BY p.id,owner) db
+            JOIN users u ON u.id=db.owner`,
       values: [owner],
     };
     const result = await this.pool.query(query);
@@ -156,9 +162,24 @@ class PlaylistsService {
     if (!result.rows.length) {
       throw new NotFoundError('Playlist tidak ditemukan');
     }
-    const note = result.rows[0];
-    if (note.owner !== owner) {
+    const playlist = result.rows[0];
+    if (playlist.owner !== owner) {
       throw new AuthorizationError('Anda tidak berhak mengakses resource ini');
+    }
+  }
+
+  async verifyPlaylistAccess(playlistId, userId) {
+    try {
+      await this.verifyPlaylistOwner(playlistId, userId);
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        throw error;
+      }
+      try {
+        await this.collaborationService.verifyCollaborator(playlistId, userId);
+      } catch {
+        throw error;
+      }
     }
   }
 }
