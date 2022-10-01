@@ -6,6 +6,7 @@
 // Kriteria 6: Pertahankan Fitur OpenMusic API versi 1
 // Kriteria Opsional: Memiliki Fitur Playlist Activities
 // Kriteria Opsional: Memiliki fitur kolaborator playlist
+// Kriteria Opsional: Mempertahankan Kriteria Opsional OpenMusic V1
 require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
