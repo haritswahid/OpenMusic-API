@@ -1,5 +1,5 @@
 const InvariantError = require('../../exceptions/InvariantError');
-const { AlbumPayloadSchema, SongPayloadSchema } = require('./schema');
+const { AlbumPayloadSchema, SongPayloadSchema, UserPayloadSchema } = require('./schema');
 
 const OpenMusicValidator = {
   validateAlbumPayload: (payload) => {
@@ -14,6 +14,12 @@ const OpenMusicValidator = {
       throw new InvariantError(validationResult.error.message);
     }
   },
+  validateUserPayload: (payload) => {
+    const validationResult = UserPayloadSchema.validate(payload);
+    if (validationResult.error) {
+      throw new InvariantError(validationResult.error.message);
+    }
+  }
 };
 
 module.exports = OpenMusicValidator;

@@ -14,4 +14,10 @@ const SongPayloadSchema = Joi.object({
   albumId: Joi.string(),
 });
 
-module.exports = { AlbumPayloadSchema, SongPayloadSchema };
+const UserPayloadSchema = Joi.object({
+  username: Joi.string().required(),
+  password: Joi.string().required(),
+  fullname: Joi.string().required(),
+});
+
+module.exports = { AlbumPayloadSchema, SongPayloadSchema, UserPayloadSchema };
