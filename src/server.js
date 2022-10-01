@@ -1,4 +1,5 @@
 // Kriteria 1: Registrasi dan Autentikasi Pengguna
+// Kriteria 2: Pengelolaan Data Playlist
 require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
