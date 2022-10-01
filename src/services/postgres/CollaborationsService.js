@@ -1,6 +1,7 @@
 const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
 const InvariantError = require('../../exceptions/InvariantError');
+const NotFoundError = require('../../exceptions/NotFoundError');
 
 class CollaborationsService {
   constructor() {
@@ -8,6 +9,8 @@ class CollaborationsService {
   }
 
   async addCollaboration(playlistId, userId) {
+    await this.verifyUserExist(userId);
+    await this.verifyPlaylistExist(playlistId);
     const id = `collab-${nanoid(16)}`;
 
     const query = {
@@ -46,6 +49,32 @@ class CollaborationsService {
 
     if (!result.rows.length) {
       throw new InvariantError('Kolaborasi gagal diverifikasi');
+    }
+  }
+
+  async verifyUserExist(userId) {
+    const query = {
+      text: 'SELECT id FROM users WHERE id = $1',
+      values: [userId],
+    };
+
+    const result = await this.pool.query(query);
+
+    if (result.rows.length === 0) {
+      throw new NotFoundError('Gagal menambahkan kolaborator. user tidak ditemukan.');
+    }
+  }
+
+  async verifyPlaylistExist(playlistId) {
+    const query = {
+      text: 'SELECT id FROM playlists WHERE id = $1',
+      values: [playlistId],
+    };
+
+    const result = await this.pool.query(query);
+
+    if (result.rows.length === 0) {
+      throw new NotFoundError('Gagal menambahkan kolaborator. playlist tidak ditemukan.');
     }
   }
 }
