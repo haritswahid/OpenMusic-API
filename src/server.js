@@ -4,6 +4,7 @@
 // Kriteria 4: Menerapkan Data Validation
 // Kriteria 5: Penanganan Eror (Error Handling)
 // Kriteria 6: Pertahankan Fitur OpenMusic API versi 1
+// Kriteria Opsional: Memiliki Fitur Playlist Activities
 require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
