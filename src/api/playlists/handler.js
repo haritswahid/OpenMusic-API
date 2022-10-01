@@ -11,6 +11,7 @@ class PlaylistsHandler {
     this.postSongByPlaylistIdHandler = this.postSongByPlaylistIdHandler.bind(this);
     this.getSongsByPlaylistIdHandler = this.getSongsByPlaylistIdHandler.bind(this);
     this.deleteSongFromPlaylistByIdHandler = this.deleteSongFromPlaylistByIdHandler.bind(this);
+    this.getPlaylistActivitiesByIdHandler = this.getPlaylistActivitiesByIdHandler.bind(this);
   }
 
   async postPlaylistHandler(request, h) {
@@ -104,7 +105,7 @@ class PlaylistsHandler {
 
       await this.service.verifyPlaylistOwner(id, credentialId);
       const playlistSongId = await this.service.addSongToPlaylist({
-        songId, playlistId: id,
+        songId, playlistId: id, userId: credentialId,
       });
       const response = h.response({
         status: 'success',
@@ -140,9 +141,7 @@ class PlaylistsHandler {
     try {
       const { id } = request.params;
       const { id: credentialId } = request.auth.credentials;
-      console.log('cek1');
       await this.service.verifyPlaylistOwner(id, credentialId);
-      console.log('cek2');
       const playlist = await this.service.getSongsPlaylist(id);
       return {
         status: 'success',
@@ -179,10 +178,43 @@ class PlaylistsHandler {
       const { id: credentialId } = request.auth.credentials;
 
       await this.service.verifyPlaylistOwner(id, credentialId);
-      await this.service.deleteSongPlaylist(id, songId);
+      await this.service.deleteSongPlaylist(id, songId, credentialId);
       return {
         status: 'success',
         message: 'Lagu berhasil dihapus dari Playlist',
+      };
+    } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+
+      // Server ERROR!
+      const response = h.response({
+        status: 'error',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      response.code(500);
+      console.error(error);
+      return response;
+    }
+  }
+
+  async getPlaylistActivitiesByIdHandler(request, h) {
+    try {
+      const { id } = request.params;
+      const { id: credentialId } = request.auth.credentials;
+      await this.service.verifyPlaylistOwner(id, credentialId);
+      const playlist = await this.service.getPlaylistActivities(id);
+      return {
+        status: 'success',
+        data: {
+          ...playlist,
+        },
       };
     } catch (error) {
       if (error instanceof ClientError) {
