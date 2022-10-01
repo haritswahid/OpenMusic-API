@@ -37,7 +37,6 @@ exports.up = (pgm) => {
     },
     name: {
       type: 'TEXT',
-      unique: true,
       notNull: true,
     },
     owner: {
