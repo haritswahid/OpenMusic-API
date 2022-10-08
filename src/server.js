@@ -12,6 +12,7 @@ const users = require('./api/users');
 const authentications = require('./api/authentications');
 const playlists = require('./api/playlists');
 const collaborations = require('./api/collaborations');
+const exportsApi = require('./api/exports');
 
 const AlbumsService = require('./services/postgres/AlbumsService');
 const SongsService = require('./services/postgres/SongsService');
@@ -20,6 +21,8 @@ const AuthenticationsService = require('./services/postgres/AuthenticationsServi
 const PlaylistsService = require('./services/postgres/PlaylistsService');
 const CollaborationsService = require('./services/postgres/CollaborationsService');
 
+const producerService = require('./services/rabbitmq/ProducerService');
+
 const init = async () => {
   const albumsService = new AlbumsService();
   const songsService = new SongsService();
@@ -27,6 +30,7 @@ const init = async () => {
   const authenticationsService = new AuthenticationsService();
   const collaborationsService = new CollaborationsService();
   const playlistsService = new PlaylistsService(collaborationsService);
+
   const server = Hapi.server({
     port: process.env.PORT,
     host: process.env.HOST,
@@ -104,6 +108,14 @@ const init = async () => {
         plugin: collaborations,
         options: {
           collaborationsService,
+          playlistsService,
+          validator: OpenMusicValidator,
+        },
+      },
+      {
+        plugin: exportsApi,
+        options: {
+          producerService,
           playlistsService,
           validator: OpenMusicValidator,
         },
