@@ -102,7 +102,6 @@ class AlbumsService {
       text: 'SELECT * FROM users WHERE id = $1',
       values: [userId],
     };
-    console.log(`SELECT * FROM users WHERE id = '${userId}'`);
     const resultUser = await this.pool.query(queryUser);
     if (!resultUser.rows.length) {
       throw new NotFoundError('User tidak ditemukan');
@@ -112,7 +111,6 @@ class AlbumsService {
       text: 'SELECT * FROM albums WHERE id = $1',
       values: [albumId],
     };
-    console.log(`SELECT * FROM albums WHERE id = '${albumId}'`);
     const resultAlbum = await this.pool.query(queryAlbum);
     if (!resultAlbum.rows.length) {
       throw new NotFoundError('Album tidak ditemukan');
@@ -147,7 +145,7 @@ class AlbumsService {
   async getLikeAlbum(id) {
     try {
       const result = await this.cacheService.get(`likes:${id}`);
-      return JSON.parse(result);
+      return { cache: true, like: JSON.parse(result) };
     } catch (error) {
       const query = {
         text: 'SELECT * FROM albums WHERE id = $1',
@@ -165,7 +163,7 @@ class AlbumsService {
       const result2 = await this.pool.query(query2);
       await this.cacheService.set(`likes:${id}`, JSON.stringify(result2.rows[0].like));
 
-      return result2.rows[0].like;
+      return { cache: false, like: result2.rows[0].like };
     }
   }
 }
