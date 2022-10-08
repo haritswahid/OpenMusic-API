@@ -227,12 +227,14 @@ class AlbumsHandler {
     try {
       const { id } = request.params;
       const like = await this.service.getLikeAlbum(id);
-      return {
+      const response = h.response({
         status: 'success',
         data: {
           likes: parseInt(like, 10),
         },
-      };
+      });
+      response.header('X-Data-Source', 'cache');
+      return response;
     } catch (error) {
       if (error instanceof ClientError) {
         const response = h.response({
