@@ -10,6 +10,7 @@ class AlbumsHandler {
     this.getAlbumByIdHandler = this.getAlbumByIdHandler.bind(this);
     this.putAlbumByIdHandler = this.putAlbumByIdHandler.bind(this);
     this.deleteAlbumByIdHandler = this.deleteAlbumByIdHandler.bind(this);
+    this.postCoverAlbumByIdHandler = this.postCoverAlbumByIdHandler.bind(this);
   }
 
   async postAlbumHandler(request, h) {
@@ -63,6 +64,7 @@ class AlbumsHandler {
     try {
       const { id } = request.params;
       const album = await this.service.getAlbumById(id);
+      if (album.coverUrl) album.coverUrl = `http://${process.env.HOST}:${process.env.PORT}/albums/images/${album.coverUrl}`;
       return {
         status: 'success',
         data: {
@@ -141,6 +143,39 @@ class AlbumsHandler {
         return response;
       }
 
+      // Server ERROR!
+      const response = h.response({
+        status: 'error',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      response.code(500);
+      console.error(error);
+      return response;
+    }
+  }
+
+  async postCoverAlbumByIdHandler(request, h) {
+    try {
+      const { id } = request.params;
+      const { cover } = request.payload;
+      console.log(cover.hapi.filename);
+      this.validator.validateImageHeaders(cover.hapi.headers);
+      await this.service.editCoverAlbumById(id, { cover });
+      const response = h.response({
+        status: 'success',
+        message: 'Sampul berhasil diunggah',
+      });
+      response.code(201);
+      return response;
+    } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
       // Server ERROR!
       const response = h.response({
         status: 'error',
