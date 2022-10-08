@@ -25,10 +25,12 @@ const CollaborationsService = require('./services/postgres/CollaborationsService
 
 const producerService = require('./services/rabbitmq/ProducerService');
 const StorageService = require('./services/storage/StorageService');
+const CacheService = require('./services/redis/CacheService');
 
 const init = async () => {
   const storageService = new StorageService(path.resolve(__dirname, 'api/albums/images'));
-  const albumsService = new AlbumsService(storageService);
+  const cacheService = new CacheService();
+  const albumsService = new AlbumsService(storageService, cacheService);
   const songsService = new SongsService();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
