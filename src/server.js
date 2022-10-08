@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
 const hapiAuthJwt = require('@hapi/jwt');
+const path = require('path');
 
 const OpenMusicValidator = require('./validator/openmusic');
 const TokenManager = require('./tokenize/TokenManager');
@@ -22,9 +23,11 @@ const PlaylistsService = require('./services/postgres/PlaylistsService');
 const CollaborationsService = require('./services/postgres/CollaborationsService');
 
 const producerService = require('./services/rabbitmq/ProducerService');
+const StorageService = require('./services/storage/StorageService');
 
 const init = async () => {
-  const albumsService = new AlbumsService();
+  const storageService = new StorageService(path.resolve(__dirname, 'api/albums/images'));
+  const albumsService = new AlbumsService(storageService);
   const songsService = new SongsService();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
