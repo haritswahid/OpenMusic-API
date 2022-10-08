@@ -49,6 +49,11 @@ const CollaborationPayloadSchema = Joi.object({
   userId: Joi.string().required(),
 });
 
+// Exports
+const ExportPlaylistsPayloadSchema = Joi.object({
+  targetEmail: Joi.string().email({ tlds: true }).required(),
+});
+
 module.exports = {
   AlbumPayloadSchema,
   SongPayloadSchema,
@@ -59,4 +64,5 @@ module.exports = {
   PostPlaylistPayloadSchema,
   PostSongPlaylistPayloadSchema,
   CollaborationPayloadSchema,
+  ExportPlaylistsPayloadSchema,
 };

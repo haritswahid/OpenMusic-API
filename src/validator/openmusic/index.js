@@ -9,6 +9,7 @@ const {
   PostPlaylistPayloadSchema,
   PostSongPlaylistPayloadSchema,
   CollaborationPayloadSchema,
+  ExportPlaylistsPayloadSchema,
 } = require('./schema');
 
 const OpenMusicValidator = {
@@ -72,6 +73,15 @@ const OpenMusicValidator = {
   // Collaborations
   validateCollaborationPayload: (payload) => {
     const validationResult = CollaborationPayloadSchema.validate(payload);
+    if (validationResult.error) {
+      throw new InvariantError(validationResult.error.message);
+    }
+  },
+
+  // Exports
+  validateExportPlaylistPayload: (payload) => {
+    const validationResult = ExportPlaylistsPayloadSchema.validate(payload);
+
     if (validationResult.error) {
       throw new InvariantError(validationResult.error.message);
     }
