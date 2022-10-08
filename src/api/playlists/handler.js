@@ -2,14 +2,6 @@ class PlaylistsHandler {
   constructor(service, validator) {
     this.service = service;
     this.validator = validator;
-
-    this.postPlaylistHandler = this.postPlaylistHandler.bind(this);
-    this.getPlaylistsHandler = this.getPlaylistsHandler.bind(this);
-    this.deletePlaylistByIdHandler = this.deletePlaylistByIdHandler.bind(this);
-    this.postSongByPlaylistIdHandler = this.postSongByPlaylistIdHandler.bind(this);
-    this.getSongsByPlaylistIdHandler = this.getSongsByPlaylistIdHandler.bind(this);
-    this.deleteSongFromPlaylistByIdHandler = this.deleteSongFromPlaylistByIdHandler.bind(this);
-    this.getPlaylistActivitiesByIdHandler = this.getPlaylistActivitiesByIdHandler.bind(this);
   }
 
   async postPlaylistHandler(request, h) {

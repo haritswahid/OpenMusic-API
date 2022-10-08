@@ -2,8 +2,6 @@ class UsersHandler {
   constructor(service, validator) {
     this.service = service;
     this.validator = validator;
-
-    this.postUserHandler = this.postUserHandler.bind(this);
   }
 
   async postUserHandler(request, h) {

@@ -3,8 +3,6 @@ class ExportsHandler {
     this.producerService = producerService;
     this.playlistsService = playlistsService;
     this.validator = validator;
-
-    this.postExportPlaylistsHandler = this.postExportPlaylistsHandler.bind(this);
   }
 
   async postExportPlaylistsHandler(request, h) {
