@@ -64,7 +64,7 @@ class AlbumsHandler {
     try {
       const { id } = request.params;
       const album = await this.service.getAlbumById(id);
-      if (album.coverUrl) album.coverUrl = `http://${process.env.HOST}:${process.env.PORT}/albums/images/${album.coverUrl}`;
+      if (album.coverUrl) album.coverUrl = `http://${process.env.HOST}:${process.env.PORT}/albums/cover/${album.coverUrl}`;
       return {
         status: 'success',
         data: {
