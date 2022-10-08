@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
 const hapiAuthJwt = require('@hapi/jwt');
+const Inert = require('@hapi/inert');
 const path = require('path');
 
 const OpenMusicValidator = require('./validator/openmusic');
@@ -48,6 +49,9 @@ const init = async () => {
   await server.register([
     {
       plugin: hapiAuthJwt,
+    },
+    {
+      plugin: Inert,
     },
   ]);
 
