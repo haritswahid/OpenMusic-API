@@ -5,15 +5,16 @@ const NotFoundError = require('../../exceptions/NotFoundError');
 const { mapDBToModelAlbums } = require('../../utils');
 
 class AlbumsService {
-  constructor() {
+  constructor(storageService) {
     this.pool = new Pool();
+    this.storageService = storageService;
   }
 
   async addAlbum({ name, year }) {
     const id = `album-${nanoid(16)}`;
 
     const query = {
-      text: 'INSERT INTO albums VALUES($1, $2, $3) RETURNING id',
+      text: 'INSERT INTO albums(id, name, year) VALUES($1, $2, $3) RETURNING id',
       values: [id, name, year],
     };
 
@@ -74,6 +75,22 @@ class AlbumsService {
     if (!result.rows.length) {
       throw new NotFoundError('Album gagal dihapus. Id tidak ditemukan');
     }
+  }
+
+  async editCoverAlbumById(id, { cover }) {
+    const coverName = await this.storageService.generateName(cover.hapi);
+    const query = {
+      text: 'UPDATE albums SET cover = $1 WHERE id = $2 RETURNING id',
+      values: [coverName, id],
+    };
+
+    const result = await this.pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Gagal memperbarui album. Id tidak ditemukan');
+    }
+    const filename = await this.storageService.writeFile(cover, coverName);
+    return filename;
   }
 }
 
