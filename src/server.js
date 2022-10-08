@@ -4,6 +4,7 @@ const Hapi = require('@hapi/hapi');
 const hapiAuthJwt = require('@hapi/jwt');
 const Inert = require('@hapi/inert');
 const path = require('path');
+const config = require('./utils/config');
 
 const OpenMusicValidator = require('./validator/openmusic');
 const TokenManager = require('./tokenize/TokenManager');
@@ -38,8 +39,8 @@ const init = async () => {
   const playlistsService = new PlaylistsService(collaborationsService);
 
   const server = Hapi.server({
-    port: process.env.PORT,
-    host: process.env.HOST,
+    port: config.app.port,
+    host: config.app.host,
     routes: {
       cors: {
         origin: ['*'],
