@@ -226,14 +226,14 @@ class AlbumsHandler {
   async getLikeAlbum(request, h) {
     try {
       const { id } = request.params;
-      const like = await this.service.getLikeAlbum(id);
+      const { cache, like } = await this.service.getLikeAlbum(id);
       const response = h.response({
         status: 'success',
         data: {
           likes: parseInt(like, 10),
         },
       });
-      response.header('X-Data-Source', 'cache');
+      if (cache) response.header('X-Data-Source', 'cache');
       return response;
     } catch (error) {
       if (error instanceof ClientError) {
