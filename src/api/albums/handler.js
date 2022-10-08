@@ -11,6 +11,8 @@ class AlbumsHandler {
     this.putAlbumByIdHandler = this.putAlbumByIdHandler.bind(this);
     this.deleteAlbumByIdHandler = this.deleteAlbumByIdHandler.bind(this);
     this.postCoverAlbumByIdHandler = this.postCoverAlbumByIdHandler.bind(this);
+    this.postLikeAlbum = this.postLikeAlbum.bind(this);
+    this.getLikeAlbum = this.getLikeAlbum.bind(this);
   }
 
   async postAlbumHandler(request, h) {
@@ -176,6 +178,71 @@ class AlbumsHandler {
         response.code(error.statusCode);
         return response;
       }
+      // Server ERROR!
+      const response = h.response({
+        status: 'error',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      response.code(500);
+      console.error(error);
+      return response;
+    }
+  }
+
+  async postLikeAlbum(request, h) {
+    try {
+      const { id } = request.params;
+      const { id: credentialId } = request.auth.credentials;
+
+      const result = await this.service.addLikeAlbum({ albumId: id, userId: credentialId });
+
+      const response = h.response({
+        status: 'success',
+        message: `Berhasil ${result}`,
+      });
+      response.code(201);
+      return response;
+    } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+
+      // Server ERROR!
+      const response = h.response({
+        status: 'error',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      response.code(500);
+      console.error(error);
+      return response;
+    }
+  }
+
+  async getLikeAlbum(request, h) {
+    try {
+      const { id } = request.params;
+      const like = await this.service.getLikeAlbum(id);
+      return {
+        status: 'success',
+        data: {
+          likes: parseInt(like, 10),
+        },
+      };
+    } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+
       // Server ERROR!
       const response = h.response({
         status: 'error',
